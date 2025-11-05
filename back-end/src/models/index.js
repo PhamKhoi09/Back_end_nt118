@@ -1,0 +1,99 @@
+// models/mysql/index.js (ví dụ)
+import Word from './Words.js';
+import Definition from './Definition.js';
+import POS from './POS.js';
+import Example from './Example.js';
+import Topics from './Topics.js';
+import Pronunciation from './Pronunciation.js';
+import Word_Families from './Word_Families.js'; 
+import SynonymGroup from './Synonym_Groups.js';
+
+// --- Quan hệ 1 - Nhiều (One-to-Many) ---
+
+// 1. Một 'Word' có nhiều 'Definition'
+Word.hasMany(Definition, { foreignKey: 'word_id' });
+// Một 'Definition' thuộc về một 'Word'
+Definition.belongsTo(Word, { foreignKey: 'word_id' });
+
+// 2. Một 'POS' có nhiều 'Definition'
+POS.hasMany(Definition, { foreignKey: 'pos_id' });
+// Một 'Definition' thuộc về một 'POS'
+Definition.belongsTo(POS, { foreignKey: 'pos_id' });
+
+// 3. Một 'Definition' có nhiều 'Example'
+Definition.hasMany(Example, { foreignKey: 'definition_id' });
+// Một 'Example' thuộc về một 'Definition'
+Example.belongsTo(Definition, { foreignKey: 'definition_id' });
+// 1. Một 'Word' có nhiều 'Pronunciation'
+Word.hasMany(Pronunciation, { foreignKey: 'word_id' });
+// Một 'Pronunciation' thuộc về một 'Word'
+Pronunciation.belongsTo(Word, { foreignKey: 'word_id' });
+
+// 2. Một 'Definition' có nhiều 'Example'
+Definition.hasMany(Example, { foreignKey: 'definition_id' });
+// Một 'Example' thuộc về một 'Definition'
+Example.belongsTo(Definition, { foreignKey: 'definition_id' });
+
+// --- Quan hệ Nhiều - Nhiều (Many-to-Many) ---
+
+// 4. 'Word' và 'Topic' (qua bảng 'Word_Topic_Mapping')
+Word.belongsToMany(Topics, {
+  through: 'Word_Topic_Mapping', // 👈 Tên bảng trung gian
+  foreignKey: 'word_id'         // Khóa của Word trong bảng trung gian
+});
+Topics.belongsToMany(Word, {
+  through: 'Word_Topic_Mapping',
+  foreignKey: 'topic_id'         // Khóa của Topic trong bảng trung gian
+});
+
+// 2. Word <-> WordFamily (Nhiều-Nhiều)
+Word.belongsToMany(Word_Families, {
+  through: 'Word_Families_Mapping', // 👈 Tên bảng trung gian
+  foreignKey: 'word_id'
+});
+Word_Families.belongsToMany(Word, {
+  through: 'Word_Families_Mapping',
+  foreignKey: 'family_id'
+});
+
+
+// 3. Word <-> SynonymGroup (Nhiều-Nhiều)
+Word.belongsToMany(SynonymGroup, {
+  through: 'Word_Synonym_Mapping', // 👈 Tên bảng trung gian
+  foreignKey: 'word_id'
+});
+SynonymGroup.belongsToMany(Word, {
+  through: 'Word_Synonym_Mapping',
+  foreignKey: 'group_id'
+});
+
+
+// 4. Word <-> Word (Nhiều-Nhiều, Tự tham chiếu) cho Antonyms (Từ trái nghĩa)
+// Đây là trường hợp đặc biệt: một bảng tự liên kết với chính nó
+
+Word.belongsToMany(Word, {
+  as: 'Antonymlist', // 👈 Đặt tên định danh cho quan hệ này
+  through: 'Antonyms', // 👈 Tên bảng trung gian
+  foreignKey: 'word1_id', // Cột 1
+  otherKey: 'word2_id'   // Cột 2
+});
+
+// Để quan hệ này hoạt động 2 chiều (word2 cũng tìm được word1)
+Word.belongsToMany(Word, {
+  as: 'AntonymOf', // 👈 Tên định danh ngược lại
+  through: 'Antonyms',
+  foreignKey: 'word2_id',
+  otherKey: 'word1_id'
+});
+// Bạn làm tương tự cho các bảng mapping khác...
+export {
+  Word,
+  Topics,
+  Word_Families,
+  SynonymGroup,
+  Example,
+  Definition,
+  POS,
+  Pronunciation
+  // ... (xuất các model khác)
+};
