@@ -36,7 +36,7 @@ if [ -d "Back_end_nt118" ]; then
   cd Back_end_nt118
   git pull origin main
 else
-  git clone https://github.com/KienNgo-o/Back_end_nt118.git
+  git clone https://github.com/PhamKhoi09/Back_end_nt118.git
   cd Back_end_nt118
 fi
 
