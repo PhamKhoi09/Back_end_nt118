@@ -1,0 +1,60 @@
+name: Deploy to EC2
+
+on:
+  #push:
+  #  branches:
+  #    - main  # Trigger khi push code lên branch main
+  workflow_dispatch:  # Cho phép chạy manual từ GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          # Tạo file private key từ secret
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          
+          # SSH vào EC2 và thực hiện deployment
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER}@${HOST} << 'ENDSSH'
+            # Di chuyển đến thư mục project
+            cd ~/Back_end_nt118
+            
+            # Pull code mới nhất từ GitHub
+            git pull origin main
+            
+            # Di chuyển vào thư mục back-end
+            cd back-end
+            
+            # Install dependencies (chỉ install các package mới nếu có)
+            npm ci --only=production
+            
+            # Restart ứng dụng với PM2
+            pm2 restart ecosystem.config.cjs || pm2 start ecosystem.config.cjs
+            
+            # Save PM2 process list để auto-start khi reboot
+            pm2 save
+            
+            echo "Deployment completed successfully!!!"
+          ENDSSH
+          
+          # Xóa private key sau khi dùng xong
+          rm -f private_key.pem
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "Deployment to EC2 was successful!!!"
+          else
+            echo "Deployment to EC2 failed!"
+          fi
