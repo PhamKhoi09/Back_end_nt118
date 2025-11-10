@@ -6,7 +6,7 @@ import Example from './Example.js';
 import Topics from './Topics.js';
 import Pronunciation from './Pronunciation.js';
 import Word_Families from './Word_Families.js'; 
-import SynonymGroup from './Synonym_Groups.js';
+import Synonym_Groups from './Synonym_Groups.js';
 
 // --- Quan hệ 1 - Nhiều (One-to-Many) ---
 
@@ -38,33 +38,39 @@ Example.belongsTo(Definition, { foreignKey: 'definition_id' });
 
 // 4. 'Word' và 'Topic' (qua bảng 'Word_Topic_Mapping')
 Word.belongsToMany(Topics, {
-  through: 'Word_Topic_Mapping', // 👈 Tên bảng trung gian
+  through: 'Word_Topic_Mapping', 
+  timestamps: false,// 👈 Tên bảng trung gian
   foreignKey: 'word_id'         // Khóa của Word trong bảng trung gian
 });
 Topics.belongsToMany(Word, {
   through: 'Word_Topic_Mapping',
+  timestamps: false,
   foreignKey: 'topic_id'         // Khóa của Topic trong bảng trung gian
 });
 
 // 2. Word <-> WordFamily (Nhiều-Nhiều)
 Word.belongsToMany(Word_Families, {
-  through: 'Word_Families_Mapping', // 👈 Tên bảng trung gian
+  through: 'Word_Family_Mapping', 
+  timestamps: false,
   foreignKey: 'word_id'
 });
 Word_Families.belongsToMany(Word, {
-  through: 'Word_Families_Mapping',
+  through: 'Word_Family_Mapping',
+  timestamps: false,
   foreignKey: 'family_id'
 });
 
 
 // 3. Word <-> SynonymGroup (Nhiều-Nhiều)
-Word.belongsToMany(SynonymGroup, {
-  through: 'Word_Synonym_Mapping', // 👈 Tên bảng trung gian
+Word.belongsToMany(Synonym_Groups, {
+  through: 'Word_Synonym_Mapping',
+  timestamps: false, // 👈 Tên bảng trung gian
   foreignKey: 'word_id'
 });
-SynonymGroup.belongsToMany(Word, {
+Synonym_Groups.belongsToMany(Word, {
   through: 'Word_Synonym_Mapping',
-  foreignKey: 'group_id'
+  foreignKey: 'group_id',
+  timestamps: false
 });
 
 
@@ -75,6 +81,7 @@ Word.belongsToMany(Word, {
   as: 'Antonymlist', // 👈 Đặt tên định danh cho quan hệ này
   through: 'Antonyms', // 👈 Tên bảng trung gian
   foreignKey: 'word1_id', // Cột 1
+  timestamps: false,
   otherKey: 'word2_id'   // Cột 2
 });
 
@@ -83,6 +90,7 @@ Word.belongsToMany(Word, {
   as: 'AntonymOf', // 👈 Tên định danh ngược lại
   through: 'Antonyms',
   foreignKey: 'word2_id',
+  timestamps: false,
   otherKey: 'word1_id'
 });
 // Bạn làm tương tự cho các bảng mapping khác...
@@ -90,7 +98,7 @@ export {
   Word,
   Topics,
   Word_Families,
-  SynonymGroup,
+  Synonym_Groups,
   Example,
   Definition,
   POS,

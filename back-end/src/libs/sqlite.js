@@ -4,7 +4,7 @@ import { Sequelize } from "sequelize";
 // Khởi tạo kết nối Sequelize
 const sequelize = new Sequelize({
   dialect: "sqlite", // 👈 Thay đổi quan trọng
-  storage: "./Vocabulary.db", // 👈 Đường dẫn đến file database
+  storage: "Vocabulary.db", // 👈 Đường dẫn đến file database
   logging: console.log, // Hiện log SQL khi chạy
 });
 
