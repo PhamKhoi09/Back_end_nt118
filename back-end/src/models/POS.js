@@ -15,6 +15,11 @@ const POS = sequelize.define("POS", {
   },
   pos_abbreviation: {
     type: DataTypes.TEXT
+  },
+  pos_name_vie: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    unique: true
   }
 }, {
   tableName: 'POS',

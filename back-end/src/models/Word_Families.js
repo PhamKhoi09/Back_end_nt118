@@ -2,7 +2,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../libs/sqlite.js";
 
-const WordFamily = sequelize.define("WordFamily", {
+const Word_Families = sequelize.define("Word_Families", {
   family_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -17,4 +17,4 @@ const WordFamily = sequelize.define("WordFamily", {
   timestamps: false
 });
 
-export default WordFamily;
+export default Word_Families;

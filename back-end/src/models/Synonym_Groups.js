@@ -2,7 +2,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../libs/sqlite.js";
 
-const SynonymGroup = sequelize.define("SynonymGroup", {
+const Synonym_Groups = sequelize.define("Synonym_Groups", {
   group_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -16,4 +16,4 @@ const SynonymGroup = sequelize.define("SynonymGroup", {
   timestamps: false
 });
 
-export default SynonymGroup;
+export default Synonym_Groups;
