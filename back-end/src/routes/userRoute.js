@@ -1,8 +1,13 @@
 import express from "express";
-import { authMe } from "../controllers/userController.js";
+import {
+  deleteAccount,
+  updateUserProfile,
+} from "../controllers/userController.js";
 
 const router = express.Router();
 
-router.get("/me", authMe);
+router.delete("/me", deleteAccount);
+
+router.patch("/me", updateUserProfile);
 
 export default router;
