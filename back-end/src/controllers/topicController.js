@@ -27,7 +27,7 @@ export const getAllTopicsForUser = async (req, res) => {
       const newProgress = await UserTopicProgress.create({
         mongoUserId: mongoUserId,
         topic_id: firstTopicId,
-        status: 'unlocked'
+        status: ['unlocked', 'comppleted']
       });
       // Thêm vào mảng progress
       userProgress.push(newProgress);

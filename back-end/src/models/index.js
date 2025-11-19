@@ -7,7 +7,11 @@ import Topics from './Topics.js';
 import Pronunciation from './Pronunciation.js';
 import Word_Families from './Word_Families.js'; 
 import Synonym_Groups from './Synonym_Groups.js';
-
+import Quiz from './Quiz.js';
+import Question from './Question.js';
+import QuestionOption from './QuestionOption.js';
+import MatchingPair from './MatchingPair.js';
+import QuizResult from './QuizResult.js';
 // --- Quan hệ 1 - Nhiều (One-to-Many) ---
 
 // 1. Một 'Word' có nhiều 'Definition'
@@ -34,6 +38,25 @@ Definition.hasMany(Example, { foreignKey: 'definition_id' });
 // Một 'Example' thuộc về một 'Definition'
 Example.belongsTo(Definition, { foreignKey: 'definition_id' });
 
+// 1. Topic <-> Quiz (1-1)
+Topics.hasOne(Quiz, { foreignKey: 'topic_id' });
+Quiz.belongsTo(Topics, { foreignKey: 'topic_id' });
+
+// 2. Quiz <-> Question (1-Nhiều)
+Quiz.hasMany(Question, { foreignKey: 'quiz_id' });
+Question.belongsTo(Quiz, { foreignKey: 'quiz_id' });
+
+// 3. Question <-> QuestionOption (1-Nhiều)
+Question.hasMany(QuestionOption, { foreignKey: 'question_id' });
+QuestionOption.belongsTo(Question, { foreignKey: 'question_id' });
+
+// 4. Question <-> MatchingPair (1-Nhiều)
+Question.hasMany(MatchingPair, { foreignKey: 'question_id' });
+MatchingPair.belongsTo(Question, { foreignKey: 'question_id' });
+
+// 5. Quiz <-> QuizResult (1-Nhiều)
+Quiz.hasMany(QuizResult, { foreignKey: 'quiz_id' });
+QuizResult.belongsTo(Quiz, { foreignKey: 'quiz_id' });
 // --- Quan hệ Nhiều - Nhiều (Many-to-Many) ---
 
 // 4. 'Word' và 'Topic' (qua bảng 'Word_Topic_Mapping')
@@ -102,6 +125,11 @@ export {
   Example,
   Definition,
   POS,
-  Pronunciation
+  Pronunciation,
+  Quiz,
+  Question,
+  QuestionOption,
+  MatchingPair,
+  QuizResult
   // ... (xuất các model khác)
 };
