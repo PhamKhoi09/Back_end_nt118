@@ -44,3 +44,11 @@ export const protectedRoute = (req, res, next) => {
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
+export const adminAuthen = (req, res, next) => {
+  // protectedRoute chạy trước nên req.user đã có dữ liệu
+  if (req.user && req.user.role === "admin") {
+    next(); // Cho phép đi tiếp
+  } else {
+    return res.status(403).json({ message: "Truy cập bị từ chối: Chỉ dành cho Admin" });
+  }
+};

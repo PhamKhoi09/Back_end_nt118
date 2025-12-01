@@ -4,11 +4,11 @@ import { connectDB } from "./libs/db.js";
 import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import topicRoute from "./routes/topicRoute.js";
-import { protectedRoute } from "./middlewares/authMiddleware.js";
+import { protectedRoute, adminAuthen } from "./middlewares/authMiddleware.js";
 import { connectsupabase } from "./libs/sqlite.js";
 import wordRoute from "./routes/wordRoute.js";
 import quizRoute from "./routes/quizRoute.js";
-import sequelize from "./libs/sqlite.js";
+import adminRoute from "./routes/adminRoute.js"
 dotenv.config();
 
 const app = express();
@@ -23,13 +23,15 @@ app.use("/api/auth", authRoute);
 // private routes
 app.use(protectedRoute); // Bất kỳ route nào khai báo SAU dòng này sẽ được bảo vệ
 
-app.use("/api/users", userRoute); // <-- THAY ĐỔI: Bỏ comment dòng này
+app.use("/api/users", userRoute);
 app.use("/api/topics", topicRoute);
 app.use("/api/words", wordRoute);
 app.use("/api/topics", quizRoute);
+app.use(adminAuthen);
+app.use("/api/admin", adminRoute);
 connectDB().then(() => {
   // Thêm từ khóa 'async' vào đầu hàm này 👇
-  connectsupabase().then(async () => { 
+  connectsupabase().then(async () => {
 
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`server bắt đầu trên cổng ${PORT}`);

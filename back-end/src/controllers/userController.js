@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import Session from "../models/Session.js";
 // Import model User của bạn (đã có sẵn)
 import User from "../models/User.js";
-
+import AppRating from "../models/AppRating.js";
 
 // --- THÊM HÀM MỚI SAU ĐÂY ---
 
@@ -122,6 +122,31 @@ export const updateUserProfile = async (req, res) => {
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.error("Lỗi khi gọi updateUserProfile", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+// ❗️ API MỚI: Gửi đánh giá ứng dụng
+export const submitAppRating = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { rating, comment } = req.body;
+
+    // Validate
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: "Vui lòng đánh giá từ 1 đến 5 sao." });
+    }
+
+    // Tìm và cập nhật (hoặc tạo mới nếu chưa có)
+    const review = await AppRating.findOneAndUpdate(
+      { userId: userId }, // Điều kiện tìm
+      { rating: rating, comment: comment }, // Dữ liệu update
+      { new: true, upsert: true } // Tùy chọn: trả về doc mới, tạo nếu chưa có
+    );
+
+    return res.status(200).json({ message: "Cảm ơn bạn đã đánh giá!", data: review });
+
+  } catch (error) {
+    console.error("Lỗi submitAppRating:", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };

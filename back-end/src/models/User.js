@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       sparse: true, // cho phép null, nhưng không được trùng
     },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    }
   },
   {
     timestamps: true,// để bên mongoDB tự thêm trường createdAt và updatedAt
