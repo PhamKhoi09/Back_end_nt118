@@ -1,6 +1,6 @@
 // models/mysql/SynonymGroup.js
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";
+import sequelize from "../libs/posgre.js";
 
 const Synonym_Groups = sequelize.define("Synonym_Groups", {
   group_id: {

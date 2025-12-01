@@ -1,6 +1,6 @@
 // models/mysql/UserTopicProgress.js
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";
+import sequelize from "../libs/posgre.js";
 import Topic from "./Topics.js";
 
 const UserTopicProgress = sequelize.define("UserTopicProgress", {

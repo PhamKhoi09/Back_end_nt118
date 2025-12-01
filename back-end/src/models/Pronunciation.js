@@ -1,7 +1,7 @@
 // models/mysql/Pronunciation.js
 import { DataTypes } from "sequelize";
 // Giả sử bạn import sequelize từ file cấu hình của mình
-import sequelize from "../libs/sqlite.js"; 
+import sequelize from "../libs/posgre.js"; 
 
 const Pronunciation = sequelize.define("Pronunciation", {
   pronunciation_id: {

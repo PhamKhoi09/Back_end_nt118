@@ -1,6 +1,6 @@
 // models/mysql/Example.js
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";
+import sequelize from "../libs/posgre.js";
 
 const Example = sequelize.define("Example", {
   example_id: {

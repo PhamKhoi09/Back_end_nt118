@@ -1,6 +1,6 @@
 // models/mysql/POS.js
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";
+import sequelize from "../libs/posgre.js";
 
 const POS = sequelize.define("POS", {
   pos_id: {

@@ -1,11 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import { connectDB } from "./libs/db.js";
+import { connectDB } from "./libs/mongoDB.js";
 import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import topicRoute from "./routes/topicRoute.js";
 import { protectedRoute, adminAuthen } from "./middlewares/authMiddleware.js";
-import { connectsupabase } from "./libs/sqlite.js";
+import { connectsupabase } from "./libs/posgre.js";
 import wordRoute from "./routes/wordRoute.js";
 import quizRoute from "./routes/quizRoute.js";
 import adminRoute from "./routes/adminRoute.js"

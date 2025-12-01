@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";
+import sequelize from "../libs/posgre.js";
 
 const MatchingPair = sequelize.define("MatchingPair", {
   pair_id: {

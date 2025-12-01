@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";// Sửa đường dẫn nếu cần
+import sequelize from "../libs/posgre.js";// Sửa đường dẫn nếu cần
 
 const Quiz = sequelize.define("Quiz", {
   quiz_id: {

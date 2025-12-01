@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       sparse: true, // cho phép null, nhưng không được trùng
     },
+    isDeleted: {
+      type: Boolean,
+      default: false, // Mặc định là chưa xóa
+    },
     role: {
       type: String,
       enum: ["user", "admin"],

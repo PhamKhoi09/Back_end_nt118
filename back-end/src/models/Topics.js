@@ -1,6 +1,6 @@
 // models/mysql/Topic.js
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";
+import sequelize from "../libs/posgre.js";
 
 const Topics = sequelize.define("Topics", {
   topic_id: {

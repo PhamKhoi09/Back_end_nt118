@@ -1,6 +1,6 @@
 // models/mysql/Definition.js
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";
+import sequelize from "../libs/posgre.js";
 
 const Definition = sequelize.define("Definition", {
   definition_id: {

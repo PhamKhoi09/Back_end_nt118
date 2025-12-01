@@ -2,9 +2,10 @@
 import User from "../models/User.js";
 import Session from "../models/Session.js";
 import { QuizResult, Quiz, Topics } from "../models/index.js"; // Import từ MySQL
-import sequelize from "../libs/sqlite.js"; // Hoặc mysql.js tùy file kết nối của bạn
+import sequelize from "../libs/posgre.js"; // Hoặc mysql.js tùy file kết nối của bạn
 import AppRating from "../models/AppRating.js";
 import AppConfig from "../models/AppConfig.js";
+import UserTopicProgress from "../models/UserTopicProgress.js";
 // 1. Thống kê Tổng quan (Dashboard Header)
 export const getDashboardStats = async (req, res) => {
   try {
@@ -48,8 +49,6 @@ export const getDashboardStats = async (req, res) => {
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
-
-
 // 3. Top Users by Quiz Completion (Top 10 User hoàn thành nhiều quiz nhất)
 export const getTopQuizzes = async (req, res) => {
   try {
@@ -106,7 +105,6 @@ export const getTopQuizzes = async (req, res) => {
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
-
 // 4. Quiz Completion Rate (Biểu đồ tròn)
 export const getCompletionRate = async (req, res) => {
   try {
@@ -156,7 +154,6 @@ export const getCompletionRate = async (req, res) => {
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
-
 // 5. Daily Traffic (Lượng truy cập - Dựa trên Session Mongo)
 export const getDailyTraffic = async (req, res) => {
   try {
@@ -200,3 +197,144 @@ export const updateAppVersion = async (req, res) => {
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 }
+
+export const getAllUsers = async (req, res) => {
+  try {
+    // 1. Phân trang (Pagination)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // 2. Lấy danh sách User từ MongoDB (trừ password)
+    const totalUsers = await User.countDocuments();
+    const users = await User.find()
+      .select("-hashedPassword")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // 3. Lấy sẵn Topic mặc định (ID = 1) để dùng khi User chưa có tiến độ
+    // Việc lấy ra ngoài vòng lặp giúp tối ưu hiệu năng, tránh query lại nhiều lần
+    const defaultTopic = await Topics.findByPk(1);
+    const defaultTopicName = defaultTopic ? defaultTopic.topic_name : "Topic 1"; // Fallback text nếu DB chưa có dữ liệu
+
+    // 4. Xử lý logic ghép dữ liệu từ 2 nguồn (Mongo + SQL)
+    const usersWithTopic = await Promise.all(users.map(async (user) => {
+      // Tìm tiến độ của user đang ở trạng thái 'unlocked'
+      // Kèm theo thông tin Topic để lấy tên
+      const progress = await UserTopicProgress.findOne({
+        where: {
+          mongoUserId: user._id.toString(), // Chuyển ObjectId sang String
+          status: 'unlocked'
+        },
+        include: [{
+          model: Topics,
+          attributes: ['topic_name'] // Chỉ lấy cột tên cho nhẹ
+        }]
+      });
+
+      // Xác định tên topic hiển thị
+      let currentTopicName = defaultTopicName;
+
+      // Nếu tìm thấy tiến độ unlocked và có thông tin topic đi kèm
+      if (progress && progress.Topic) {
+        currentTopicName = progress.Topic.topic_name;
+      }
+
+      // Trả về object user đã merge thêm trường mới
+      return {
+        ...user.toObject(), // Chuyển từ Mongoose Document sang Object thường
+        currentTopic: currentTopicName
+      };
+    }));
+
+    // 5. Trả về kết quả
+    return res.status(200).json({
+      data: usersWithTopic,
+      pagination: {
+        totalUsers,
+        currentPage: page,
+        totalPages: Math.ceil(totalUsers / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi get all users:", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+// 2. MỚI: API THỐNG KÊ USER TRONG 24H
+export const getUserActivityStats = async (req, res) => {
+  try {
+    // Lấy mốc thời gian 24h trước
+    const oneDayAgo = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+
+    // Đếm user đăng ký mới (createdAt >= 24h trước)
+    const newUsersCount = await User.countDocuments({
+      createdAt: { $gte: oneDayAgo }
+    });
+
+    // Đếm user đã bị xóa (isDeleted = true VÀ updatedAt >= 24h trước)
+    // Logic: Khi xóa mềm, ta update isDeleted=true, nên updatedAt sẽ đổi thành giờ xóa
+    const deletedUsersCount = await User.countDocuments({
+      isDeleted: true,
+      updatedAt: { $gte: oneDayAgo }
+    });
+
+    return res.status(200).json({
+      last24h: {
+        newRegistrations: newUsersCount,
+        deletedAccounts: deletedUsersCount
+      },
+      checkTime: new Date()
+    });
+
+  } catch (error) {
+    console.error("Lỗi get user activity stats:", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+// 2. UPDATE: Sửa thông tin user (Ví dụ: Chặn user hoặc cấp quyền admin)
+export const updateUserStatus = async (req, res) => {
+  try {
+    const { id } = req.params; // Lấy ID từ url
+    const { role, isActive } = req.body; // Dữ liệu muốn sửa
+
+    // Tìm user cần sửa
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: "User không tồn tại" });
+
+    // Cập nhật
+    if (role) user.role = role;
+    // Giả sử bạn thêm trường isActive vào model User, nếu chưa có thì bỏ qua dòng này
+    // if (typeof isActive !== 'undefined') user.isActive = isActive; 
+
+    await user.save();
+
+    return res.status(200).json({ message: "Cập nhật thành công", user });
+  } catch (error) {
+    console.error("Lỗi update user:", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+// 3. DELETE: Xóa user
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Ngăn không cho admin tự xóa chính mình
+    if (req.user._id.toString() === id) {
+        return res.status(400).json({ message: "Không thể tự xóa tài khoản admin đang đăng nhập!" });
+    }
+
+    const deletedUser = await User.findByIdAndUpdate(id, { isDeleted: true });;
+
+    if (!deletedUser) return res.status(404).json({ message: "User không tồn tại" });
+
+    return res.status(200).json({ message: "Đã xóa user thành công" });
+  } catch (error) {
+    console.error("Lỗi delete user:", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};

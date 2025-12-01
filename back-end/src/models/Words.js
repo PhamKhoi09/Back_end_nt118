@@ -1,7 +1,7 @@
 // models/mysql/Word.js (bạn có thể đặt tên thư mục tùy ý)
 import { DataTypes } from "sequelize";
 // Giả sử bạn import sequelize từ file cấu hình
-import sequelize from "../libs/sqlite.js"; 
+import sequelize from "../libs/posgre.js"; 
 
 const Word = sequelize.define("Words", {
   word_id: {

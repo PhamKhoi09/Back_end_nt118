@@ -1,6 +1,6 @@
 // models/mysql/WordFamily.js (Nên đặt tên file là số ít)
 import { DataTypes } from "sequelize";
-import sequelize from "../libs/sqlite.js";
+import sequelize from "../libs/posgre.js";
 
 const Word_Families = sequelize.define("Word_Families", {
   family_id: {
