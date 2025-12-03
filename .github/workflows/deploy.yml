@@ -56,7 +56,12 @@ jobs:
             
             # Install dependencies
             echo "Installing dependencies..."
-            npm ci --only=production || { echo "npm install failed"; exit 1; }
+            # Thử npm ci trước, nếu fail thì dùng npm install
+            if ! npm ci --only=production 2>/dev/null; then
+              echo "npm ci failed, trying npm install instead..."
+              rm -f package-lock.json
+              npm install --only=production || { echo "npm install failed"; exit 1; }
+            fi
             
             # Kiểm tra syntax JavaScript
             echo "Checking syntax..."
