@@ -7,15 +7,11 @@ import Topics from './Topics.js';
 import Pronunciation from './Pronunciation.js';
 import Word_Families from './Word_Families.js'; 
 import Synonym_Groups from './Synonym_Groups.js';
-<<<<<<< HEAD
 import Quiz from './Quiz.js';
 import Question from './Question.js';
 import QuestionOption from './QuestionOption.js';
 import MatchingPair from './MatchingPair.js';
 import QuizResult from './QuizResult.js';
-=======
-
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
 // --- Quan hệ 1 - Nhiều (One-to-Many) ---
 
 // 1. Một 'Word' có nhiều 'Definition'
@@ -42,7 +38,6 @@ Definition.hasMany(Example, { foreignKey: 'definition_id' });
 // Một 'Example' thuộc về một 'Definition'
 Example.belongsTo(Definition, { foreignKey: 'definition_id' });
 
-<<<<<<< HEAD
 // 1. Topic <-> Quiz (1-1)
 Topics.hasOne(Quiz, { foreignKey: 'topic_id' });
 Quiz.belongsTo(Topics, { foreignKey: 'topic_id' });
@@ -62,8 +57,6 @@ MatchingPair.belongsTo(Question, { foreignKey: 'question_id' });
 // 5. Quiz <-> QuizResult (1-Nhiều)
 Quiz.hasMany(QuizResult, { foreignKey: 'quiz_id' });
 QuizResult.belongsTo(Quiz, { foreignKey: 'quiz_id' });
-=======
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
 // --- Quan hệ Nhiều - Nhiều (Many-to-Many) ---
 
 // 4. 'Word' và 'Topic' (qua bảng 'Word_Topic_Mapping')
@@ -132,15 +125,11 @@ export {
   Example,
   Definition,
   POS,
-<<<<<<< HEAD
   Pronunciation,
   Quiz,
   Question,
   QuestionOption,
   MatchingPair,
   QuizResult
-=======
-  Pronunciation
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
   // ... (xuất các model khác)
 };

@@ -3,17 +3,11 @@ node_modules/
 !.env.example
 jsconfig.json
 
-<<<<<<< HEAD
 # Database files
 *.db
 *.db-shm
 *.db-wal
 Vocabulary.db
-=======
-# database files
-*.db
-*.sqlite
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
 
 # PM2 logs
 back-end/logs/

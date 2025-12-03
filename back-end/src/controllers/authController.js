@@ -90,26 +90,11 @@ export const signIn = async (req, res) => {
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
     });
 
-<<<<<<< HEAD
-=======
-    // Xoá cookie
-    // res.cookie("refreshToken", refreshToken, {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "none",
-    //   maxAge: REFRESH_TOKEN_TTL,
-    // });
-
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
     // Trả cả 2 token về trong JSON body
     return res
       .status(200)
       .json({ 
-<<<<<<< HEAD
         message: `User ${user.username} đã logged in!`, 
-=======
-        message: `User ${user.username} đã logged in!`, // Sửa thành username cho nhất quán
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
         accessToken,
         refreshToken // <-- THAY ĐỔI: Thêm refreshToken vào đây
       });
@@ -127,10 +112,6 @@ export const signOut = async (req, res) => {
     if (refreshToken) {
       // xoá refresh token trong Session
       await Session.deleteOne({ refreshToken: refreshToken }); // <-- THAY ĐỔI
-<<<<<<< HEAD
-=======
-
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
     }
 
     return res.sendStatus(204);

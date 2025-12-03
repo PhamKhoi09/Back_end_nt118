@@ -43,7 +43,6 @@ export const protectedRoute = (req, res, next) => {
     console.error("Lỗi khi xác minh JWT trong authMiddleware", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
-<<<<<<< HEAD
 };
 export const adminAuthen = (req, res, next) => {
   // protectedRoute chạy trước nên req.user đã có dữ liệu
@@ -52,6 +51,4 @@ export const adminAuthen = (req, res, next) => {
   } else {
     return res.status(403).json({ message: "Truy cập bị từ chối: Chỉ dành cho Admin" });
   }
-=======
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
 };

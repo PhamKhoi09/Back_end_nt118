@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       sparse: true, // cho phép null, nhưng không được trùng
     },
-<<<<<<< HEAD
     isDeleted: {
       type: Boolean,
       default: false, // Mặc định là chưa xóa
@@ -40,8 +39,6 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     }
-=======
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
   },
   {
     timestamps: true,// để bên mongoDB tự thêm trường createdAt và updatedAt

@@ -3,11 +3,7 @@ import bcrypt from "bcrypt";
 import Session from "../models/Session.js";
 // Import model User của bạn (đã có sẵn)
 import User from "../models/User.js";
-<<<<<<< HEAD
 import AppRating from "../models/AppRating.js";
-=======
-
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
 
 // --- THÊM HÀM MỚI SAU ĐÂY ---
 
@@ -128,7 +124,6 @@ export const updateUserProfile = async (req, res) => {
     console.error("Lỗi khi gọi updateUserProfile", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
-<<<<<<< HEAD
 };
 // ❗️ API MỚI: Gửi đánh giá ứng dụng
 export const submitAppRating = async (req, res) => {
@@ -154,6 +149,4 @@ export const submitAppRating = async (req, res) => {
     console.error("Lỗi submitAppRating:", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
-=======
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
 };
