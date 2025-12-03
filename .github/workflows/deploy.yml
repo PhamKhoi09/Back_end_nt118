@@ -40,13 +40,10 @@ jobs:
             if ! git diff --quiet HEAD origin/main; then
               echo "Có code mới, đang update..."
               
-              # Reset mọi thay đổi local (QUAN TRỌNG!)
-              echo "Resetting local changes..."
-              git reset --hard HEAD
+              # Reset mọi thay đổi local và nhảy thẳng đến commit mới nhất
+              echo "Resetting to latest remote commit..."
+              git reset --hard origin/main
               git clean -fd
-              
-              # Pull code mới
-              git pull origin main || { echo "Git pull failed"; exit 1; }
             else
               echo "Code đã up-to-date"
             fi
