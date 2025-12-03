@@ -46,8 +46,4 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-<<<<<<< HEAD
 *.sw?
-=======
-*.sw?
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7

@@ -26,25 +26,57 @@ jobs:
           
           # SSH vào EC2 và thực hiện deployment
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER}@${HOST} << 'ENDSSH'
-            # Di chuyển đến thư mục project
-            cd ~/Back_end_nt118
+            set -e  # Exit immediately if any command fails
             
-            # Pull code mới nhất từ GitHub
-            git pull origin main
+            echo "Bắt đầu deployment..."
+            
+            # Di chuyển đến thư mục project
+            cd ~/Back_end_nt118 || { echo "Không tìm thấy thư mục project"; exit 1; }
+            
+            echo "Fetching latest changes..."
+            git fetch origin main
+            
+            # Kiểm tra xem có thay đổi local không
+            if ! git diff --quiet HEAD origin/main; then
+              echo "Có code mới, đang update..."
+              
+              # Reset mọi thay đổi local (QUAN TRỌNG!)
+              echo "Resetting local changes..."
+              git reset --hard HEAD
+              git clean -fd
+              
+              # Pull code mới
+              git pull origin main || { echo "Git pull failed"; exit 1; }
+            else
+              echo "Code đã up-to-date"
+            fi
             
             # Di chuyển vào thư mục back-end
-            cd back-end
+            cd back-end || { echo "Không tìm thấy thư mục back-end"; exit 1; }
             
-            # Install dependencies (chỉ install các package mới nếu có)
-            npm ci --only=production
+            # Install dependencies
+            echo "Installing dependencies..."
+            npm ci --only=production || { echo "npm install failed"; exit 1; }
+            
+            # Kiểm tra syntax JavaScript
+            echo "Checking syntax..."
+            node -c src/server.js || { echo "Syntax error detected"; exit 1; }
             
             # Restart ứng dụng với PM2
-            pm2 restart ecosystem.config.cjs || pm2 start ecosystem.config.cjs
+            echo "Restarting application..."
+            if pm2 describe back-end-nt118 > /dev/null 2>&1; then
+              pm2 restart ecosystem.config.cjs
+            else
+              pm2 start ecosystem.config.cjs
+            fi
             
-            # Save PM2 process list để auto-start khi reboot
+            # Save PM2 configuration
             pm2 save
             
-            echo "Deployment completed successfully!!!"
+            # Show status
+            pm2 status
+            
+            echo "Deployment completed successfully!"
           ENDSSH
           
           # Xóa private key sau khi dùng xong
