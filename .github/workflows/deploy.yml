@@ -1,15 +1,9 @@
 name: Deploy to EC2
 
 on:
-<<<<<<< HEAD
-  #push:
-  #  branches:
-  #    - main  # Trigger khi push code lên branch main
-=======
   push:
     branches:
       - main  # Trigger khi push code lên branch main
->>>>>>> 73fa3a001cfbcdbb44df21759a1ae5fd55eaa2b7
   workflow_dispatch:  # Cho phép chạy manual từ GitHub UI
 
 jobs:
