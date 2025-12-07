@@ -9,7 +9,7 @@ from fastdtw import fastdtw
 from flask import Flask, request, jsonify
 from difflib import SequenceMatcher
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # 1. Load AI Model (Whisper)
 print("⏳ Loading Whisper...")
@@ -143,5 +143,5 @@ def grade():
                 try: os.remove(f)
                 except: pass
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(port=5002, debug=True)
