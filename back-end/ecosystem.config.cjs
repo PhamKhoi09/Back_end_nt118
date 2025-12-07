@@ -1,5 +1,4 @@
 // PM2 Configuration file for production deployment
-// https://pm2.keymetrics.io/docs/usage/application-declaration/
 
 module.exports = {
   apps: [
