@@ -9,7 +9,7 @@ from fastdtw import fastdtw
 from flask import Flask, request, jsonify
 from difflib import SequenceMatcher
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 # 1. Load AI Model (Whisper)
 print("⏳ Loading Whisper...")
@@ -55,7 +55,7 @@ def compare_intonation(user_path, ref_path):
 
         # Chấm điểm Intonation
         # Dist < 0.5 là rất giống, > 1.5 là ngược tông
-        score = 100 / (1 + np.exp(3 * (avg_dist - 0.7)))
+        score = 100 / (0.7 + np.exp(3 * (avg_dist - 0.7)))
         
         return round(score, 1)
 
@@ -122,14 +122,7 @@ def grade():
             print(f"🎯 Intonation: {intonation_score}%")
 
             # Công thức tổng hợp: 60% Độ đúng từ + 40% Ngữ điệu
-            final_score = (accuracy_score * 0.6) + (intonation_score * 0.4)
-            
-            if intonation_score > 80:
-                feedback = "Tuyệt vời! Phát âm chuẩn và ngữ điệu rất hay."
-            elif intonation_score > 50:
-                feedback = "Phát âm đúng từ, nhưng ngữ điệu hơi ngang (đơn điệu)."
-            else:
-                feedback = "Phát âm đúng từ, nhưng sai tông giọng (lên xuống giọng chưa chuẩn)."
+            final_score = (accuracy_score * 0.7) + (intonation_score * 0.3)
 
         return jsonify({
             "score": round(final_score, 1),
@@ -138,7 +131,6 @@ def grade():
                 "intonation_score": round(intonation_score, 1),
                 "detected_text": detected_text
             },
-            "feedback": feedback
         })
 
     except Exception as e:
@@ -151,5 +143,5 @@ def grade():
                 try: os.remove(f)
                 except: pass
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     app.run(port=5002, debug=True)

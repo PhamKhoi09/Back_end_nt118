@@ -56,7 +56,7 @@ export const gradePronunciation = async (req, res) => {
     // - URL file mẫu (Để Librosa/DTW chấm điểm Intonation)
     formData.append('ref_audio_url', refAudioUrl);
 
-    console.log(`📡 Đang gửi sang Python...`);
+    console.log("Đang gửi sang Python...");
     console.log(`   - Word: ${correctText}`);
     console.log(`   - Ref Audio: ${refAudioUrl}`);
 
