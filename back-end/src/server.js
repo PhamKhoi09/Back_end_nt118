@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Updated for demo auto-deployment
+// Updated for demo auto-deployment on ec2
 // middlewares
 app.use(express.json()); // kiểm tra xem dữ liệu gửi qua có phải là json không
 // public routes
