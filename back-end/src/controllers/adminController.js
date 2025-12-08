@@ -6,6 +6,26 @@ import sequelize from "../libs/posgre.js"; // Hoặc mysql.js tùy file kết n�
 import AppRating from "../models/AppRating.js";
 import AppConfig from "../models/AppConfig.js";
 import UserTopicProgress from "../models/UserTopicProgress.js";
+
+// Lấy tên và streak của toàn bộ user
+export const getUserStreaks = async (_req, res) => {
+  try {
+    const users = await User.find({ isDeleted: false })
+      .select("username streak")
+      .sort({ createdAt: -1 });
+
+    const result = users.map((user) => ({
+      id: user._id,
+      username: user.username,
+      streak: typeof user.streak === "number" ? user.streak : 0,
+    }));
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Lỗi getUserStreaks:", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
 // 1. Thống kê Tổng quan (Dashboard Header)
 export const getDashboardStats = async (req, res) => {
   try {

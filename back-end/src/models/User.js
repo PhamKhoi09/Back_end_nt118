@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema(
       trim: true,// tu bo khoang trang o dau va cuoi
       lowercase: true,// chyen het ve chu thuong
     },
+    streak: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     hashedPassword: {
       type: String,
       required: true,

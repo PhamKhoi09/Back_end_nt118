@@ -5,6 +5,41 @@ import Session from "../models/Session.js";
 import User from "../models/User.js";
 import AppRating from "../models/AppRating.js";
 
+// Cập nhật streak của user
+export const updateUserStreak = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { streak } = req.body;
+
+    if (streak === undefined) {
+      return res.status(400).json({ message: "Thiếu thông tin streak" });
+    }
+
+    const parsedStreak = Number(streak);
+    if (Number.isNaN(parsedStreak) || parsedStreak < 0) {
+      return res.status(400).json({ message: "Streak phải là số không âm" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { streak: parsedStreak },
+      { new: true, runValidators: true }
+    ).select("username streak");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+
+    return res.status(200).json({
+      message: "Cập nhật streak thành công",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error("Lỗi updateUserStreak", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
 // --- THÊM HÀM MỚI SAU ĐÂY ---
 
 export const deleteAccount = async (req, res) => {

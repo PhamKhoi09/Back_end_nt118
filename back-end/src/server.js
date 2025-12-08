@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Updated for demo auto-deployment on ec2
+
 // middlewares
 app.use(express.json()); // kiểm tra xem dữ liệu gửi qua có phải là json không
 // public routes
@@ -29,8 +29,7 @@ app.use("/api/topics", topicRoute);
 app.use("/api/words", wordRoute);
 app.use("/api/topics", quizRoute);
 app.use("/api/pronun",pronunciationRoute);
-app.use(adminAuthen);
-app.use("/api/admin", adminRoute);
+app.use("/api/admin", adminAuthen, adminRoute);
 connectDB().then(() => {
   // Thêm từ khóa 'async' vào đầu hàm này 👇
   connectsupabase().then(async () => {

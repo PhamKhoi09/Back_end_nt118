@@ -9,7 +9,8 @@ import {
   getAllUsers,      
   updateUserStatus, 
   deleteUser,
-  getUserActivityStats
+  getUserActivityStats,
+  getUserStreaks
 } from "../controllers/adminController.js";
 import {
   getAllQuizzes,
@@ -28,10 +29,11 @@ router.get("/stats/top-quizzes", getTopQuizzes); // Top quiz
 router.get("/stats/completion-rate", getCompletionRate); // Biểu đồ tròn
 router.get("/stats/traffic", getDailyTraffic); // Biểu đồ cột
 router.post("/config/version", updateAppVersion);
+router.get("/users/activity-24h", getUserActivityStats);
+router.get("/users/streaks", getUserStreaks);
 router.get("/users", getAllUsers);           
 router.patch("/users/:id", updateUserStatus); 
 router.delete("/users/:id", deleteUser);
-router.get("/users/activity-24h", getUserActivityStats);
 
 router.get("/quizzes", getAllQuizzes);          // Lấy list quiz + stats
 router.get("/quizzes/:id", getQuizDetail);      // Lấy chi tiết quiz + questions
